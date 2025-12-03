@@ -1,0 +1,239 @@
+// Contenedor "Fullscreen" para tapar el sidebar y navbar
+.full-screen-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #f4f7fb; // Fondo gris/azul claro estándar
+  z-index: 9999; // Prioridad máxima
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  padding: 40px 15px;
+  box-sizing: border-box;
+}
+
+.card-container {
+  background: #ffffff;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  height: fit-content;
+  overflow: hidden; // Para que el header respete los bordes redondeados
+  margin-bottom: 40px;
+  animation: slideIn 0.3s ease-out;
+}
+
+// -- CABECERA CON GRADIENTE AZUL (De vuelta) --
+.card-header-custom {
+  // Gradiente azul elegante (Estilo Ticket anterior)
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  padding: 30px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center; // Alineado al centro verticalmente
+
+  .header-text {
+    .title-custom {
+      font-family: 'Nexa-Bold', sans-serif; // Fuente de tu app
+      font-size: 26px;
+      color: #ffffff; // Texto blanco para resaltar en el azul
+      margin: 0;
+      letter-spacing: 1px;
+    }
+
+    .subtitle-custom {
+      color: rgba(255, 255, 255, 0.8); // Blanco con transparencia
+      margin-top: 5px;
+      font-size: 14px;
+      font-weight: 400;
+    }
+  }
+
+  // Flecha "Limpia" e Integrada (Blanca)
+  .clean-back-btn {
+    color: #ffffff;
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.1); // Fondo muy sutil al estar inactivo
+    border-radius: 50%;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.25); // Resalte al pasar el mouse
+      transform: scale(1.2);
+      transition: all 0.2s ease;
+    }
+  }
+}
+
+.card-body-custom {
+  padding: 30px 40px 40px 40px;
+}
+
+// -- SECCIÓN TICKET (Destacado de Fechas) --
+.ticket-row-highlight {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px 15px;
+  border: 1px solid #eef2f5;
+  margin-bottom: 25px;
+
+  // Línea divisoria punteada para escritorio
+  .border-right-dashed {
+    border-right: 1px dashed #ccc;
+
+    @media (max-width: 768px) {
+      border-right: none;
+      border-bottom: 1px dashed #ccc;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+    }
+  }
+}
+
+.compact-input {
+  margin-bottom: 0;
+
+  // Ajuste fino para inputs dentro del ticket
+  ::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+// -- INPUTS (Estilo Fill con línea abajo) --
+::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: #fafafa !important; // Fondo casi blanco
+  border-bottom: 1px solid #dcdcdc;
+  border-radius: 4px 4px 0 0;
+}
+
+// -- AUDIENCIA (Checkboxes) --
+.audience-section {
+  background: #fff;
+
+  .audience-label {
+    display: block;
+    font-family: 'Nexa-Bold', sans-serif;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 12px;
+  }
+
+  // Ajuste de color para los checkboxes al seleccionarse (Turquesa)
+  ::ng-deep .mat-checkbox-checked.mat-primary .mat-checkbox-background {
+    background-color: #0092B8 !important;
+  }
+}
+
+// -- BOTÓN DE ACCIÓN (Turquesa con Gradiente) --
+.btn-primary-custom {
+  background: linear-gradient(135deg, #0092B8 0%, #007a99 100%) !important;
+  color: white !important;
+  font-family: 'Nexa-Bold', sans-serif; // Fuente solicitada
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  padding: 0 45px;
+  height: 50px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 146, 184, 0.25);
+  border: none;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 146, 184, 0.4);
+    background: linear-gradient(135deg, #00A3CC 0%, #008cb3 100%) !important;
+  }
+}
+
+// Animación de entrada
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// -- RESPONSIVE --
+@media (max-width: 600px) {
+  .full-screen-wrapper {
+    padding: 0;
+    background: #fff;
+  }
+
+  .card-container {
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 100vh;
+    margin-bottom: 0;
+  }
+
+  .card-header-custom {
+    padding: 20px;
+
+    .header-text .title-custom {
+      font-size: 22px;
+    }
+  }
+
+  .card-body-custom {
+    padding: 20px;
+  }
+
+  // En móvil el botón ocupa todo el ancho
+  .btn-primary-custom {
+    width: 100%;
+  }
+
+
+
+}
+
+::ng-deep .cdk-overlay-container {
+  z-index: 10000 !important; // Mayor que el 9999 del wrapper
+}
+
+::ng-deep .cdk-global-overlay-wrapper {
+  z-index: 10001 !important;
+}
+
+// 2. Para el Reloj (ngx-material-timepicker)
+::ng-deep .timepicker-overlay {
+  z-index: 10002 !important;
+}
+
+::ng-deep .timepicker-backdrop {
+  z-index: 10001 !important;
+}
+
+// Estilo para mensajes de error forzados
+.error-msg {
+  color: #f44336;
+  font-size: 11px;
+  margin-top: -15px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  align-items: center;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
