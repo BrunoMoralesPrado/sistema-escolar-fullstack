@@ -7,90 +7,55 @@ import { AdministradoresService } from 'src/app/services/administradores.service
   templateUrl: './graficas-screen.component.html',
   styleUrls: ['./graficas-screen.component.scss']
 })
-export class GraficasScreenComponent implements OnInit{
+export class GraficasScreenComponent implements OnInit {
 
-  //Agregar chartjs-plugin-datalabels
-  //Variables
-
-  public total_user: any = {};
-
-  //Histograma
-  lineChartData = {
-    labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-    datasets: [
-      {
-        data:[89, 34, 43, 54, 28, 74, 93],
-        label: 'Registro de materias',
-        backgroundColor: '#F88406'
-      }
-    ]
-  }
-  lineChartOption = {
-    responsive:false
-  }
-  lineChartPlugins = [ DatalabelsPlugin ];
-
-  //Barras
-  barChartData = {
-    labels: ["Congreso", "FePro", "Presentación Doctoral", "Feria Matemáticas", "T-System"],
-    datasets: [
-      {
-        data:[34, 43, 54, 28, 74],
-        label: 'Eventos Académicos',
-        backgroundColor: [
-          '#F88406',
-          '#FCFF44',
-          '#82D3FB',
-          '#FB82F5',
-          '#2AD84A'
-        ]
-      }
-    ]
-  }
-  barChartOption = {
-    responsive:false
-  }
-  barChartPlugins = [ DatalabelsPlugin ];
-
-  //Circular
-  pieChartData = {
+  // Histograma
+  lineChartData: any = {
     labels: ["Administradores", "Maestros", "Alumnos"],
-    datasets: [
-      {
-        data:[89, 34, 43],
-        label: 'Registro de usuarios',
-        backgroundColor: [
-          '#FCFF44',
-          '#F1C8F2',
-          '#31E731'
-        ]
-      }
-    ]
-  }
-  pieChartOption = {
-    responsive:false
-  }
-  pieChartPlugins = [ DatalabelsPlugin ];
+    datasets: [{
+      data: [0, 0, 0],
+      label: 'Registro de Usuarios',
+      backgroundColor: '#F88406',
+      borderColor: '#F88406',
+      tension: 0.4
+    }]
+  };
+  lineChartOption = { responsive: false };
+  lineChartPlugins = [DatalabelsPlugin];
 
-  // Doughnut
-  doughnutChartData = {
+  // Barras
+  barChartData: any = {
     labels: ["Administradores", "Maestros", "Alumnos"],
-    datasets: [
-      {
-        data:[89, 34, 43],
-        label: 'Registro de usuarios',
-        backgroundColor: [
-          '#F88406',
-          '#FCFF44',
-          '#31E7E7'
-        ]
-      }
-    ]
-  }
-  doughnutChartOption = {
-    responsive:false
-  }
-  doughnutChartPlugins = [ DatalabelsPlugin ];
+    datasets: [{
+      data: [0, 0, 0],
+      label: 'Cantidad de Usuarios',
+      backgroundColor: ['#FCFF44', '#82D3FB', '#FB82F5']
+    }]
+  };
+  barChartOption = { responsive: false };
+  barChartPlugins = [DatalabelsPlugin];
+
+  // Circular
+  pieChartData: any = {
+    labels: ["Administradores", "Maestros", "Alumnos"],
+    datasets: [{
+      data: [0, 0, 0],
+      backgroundColor: ['#FCFF44', '#F1C8F2', '#31E731']
+    }]
+  };
+  pieChartOption = { responsive: false };
+  pieChartPlugins = [DatalabelsPlugin];
+
+  // Dona
+  doughnutChartData: any = {
+    labels: ["Administradores", "Maestros", "Alumnos"],
+    datasets: [{
+      data: [0, 0, 0],
+      backgroundColor: ['#F88406', '#FCFF44', '#31E7E7']
+    }]
+  };
+  doughnutChartOption = { responsive: false };
+  doughnutChartPlugins = [DatalabelsPlugin];
 
   constructor(
     private administradoresServices: AdministradoresService
@@ -100,18 +65,53 @@ export class GraficasScreenComponent implements OnInit{
     this.obtenerTotalUsers();
   }
 
-  // Función para obtener el total de usuarios registrados
-  public obtenerTotalUsers(){
+  public obtenerTotalUsers() {
     this.administradoresServices.getTotalUsuarios().subscribe(
-      (response)=>{
-        this.total_user = response;
-        console.log("Total usuarios: ", this.total_user);
-      }, (error)=>{
-        console.log("Error al obtener total de usuarios ", error);
+      (response) => {
+        console.log("Total usuarios obtenidos: ", response);
+        const listaDatos = [response.admins, response.maestros, response.alumnos];
 
-        alert("No se pudo obtener el total de cada rol de usuarios");
+        this.pieChartData = {
+          labels: ["Administradores", "Maestros", "Alumnos"],
+          datasets: [{
+            data: listaDatos,
+            backgroundColor: ['#FCFF44', '#F1C8F2', '#31E731']
+          }]
+        };
+
+        this.doughnutChartData = {
+          labels: ["Administradores", "Maestros", "Alumnos"],
+          datasets: [{
+            data: listaDatos,
+            backgroundColor: ['#F88406', '#FCFF44', '#31E7E7']
+          }]
+        };
+
+        this.barChartData = {
+          labels: ["Administradores", "Maestros", "Alumnos"],
+          datasets: [{
+            data: listaDatos,
+            label: 'Total de Usuarios',
+            backgroundColor: ['#FCFF44', '#82D3FB', '#FB82F5']
+          }]
+        };
+
+        this.lineChartData = {
+          labels: ["Administradores", "Maestros", "Alumnos"],
+          datasets: [{
+            data: listaDatos,
+            label: 'Tendencia de Usuarios',
+            backgroundColor: '#F88406',
+            borderColor: '#F88406',
+            fill: false,
+            tension: 0.1
+          }]
+        };
+
+      }, (error) => {
+        console.error(error);
+        alert("No se pudo obtener el total de usuarios");
       }
     );
   }
-
 }
