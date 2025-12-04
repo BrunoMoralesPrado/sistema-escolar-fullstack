@@ -19,6 +19,7 @@ export class MaestrosScreenComponent implements OnInit {
   public name_user: string = "";
   public rol: string = "";
   public token: string = "";
+  public userID: number = 0;
   public lista_maestros: any[] = [];
 
   //Para la tabla
@@ -50,6 +51,7 @@ export class MaestrosScreenComponent implements OnInit {
   ngOnInit(): void {
     this.name_user = this.facadeService.getUserCompleteName();
     this.rol = this.facadeService.getUserGroup();
+    this.userID = Number(this.facadeService.getUserId());
     //Validar que haya inicio de sesión
     //Obtengo el token del login
     this.token = this.facadeService.getSessionToken();
@@ -67,6 +69,11 @@ export class MaestrosScreenComponent implements OnInit {
       // Retorna true si el nombre completo incluye el texto del filtro
       return fullName.includes(filter);
     };
+
+    if (this.rol !== 'administrador') {
+      // Filtramos para quitar 'eliminar'
+      this.displayedColumns = this.displayedColumns.filter(c => c !== 'eliminar');
+    }
   }
 
   setDataSourceAttributes() {

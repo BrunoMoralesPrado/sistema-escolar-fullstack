@@ -1,239 +1,211 @@
-// Contenedor "Fullscreen" para tapar el sidebar y navbar
+// =========================================
+// 1. CONFIGURACIÓN GLOBAL (Basado en tu archivo)
+// =========================================
+$font-main: 'Nexa', sans-serif;
+$font-bold: 'Nexa-Bold', sans-serif;
+$color-dark: #231F20; // Color principal de texto
+$color-blue: #0092B8; // Color de acción (editar)
+$color-red: #E84150; // Color de borrar/cancelar
+$shadow-card: 0 4px 24px 0 rgba(0, 0, 0, 0.07);
+$radius-card: 12px;
+
+// =========================================
+// 2. ESTRUCTURA Y SIDEBAR
+// =========================================
+
+// Adaptamos el wrapper para que respete el sidebar como en "main-content-maestros"
 .full-screen-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #f4f7fb; // Fondo gris/azul claro estándar
-  z-index: 9999; // Prioridad máxima
-  overflow-y: auto;
-  display: flex;
-  justify-content: center;
-  padding: 40px 15px;
-  box-sizing: border-box;
+  padding: 2rem;
+  background-color: #f8f9fa; // Fondo suave para que resalte la card blanca
+  min-height: 100vh;
+
+  // Lógica del sidebar del archivo que me pasaste
+  margin-left: 220px;
+  transition: margin-left 0.3s;
+
+  @media (max-width: 991px) {
+    margin-left: 0;
+  }
 }
 
+// =========================================
+// 3. TARJETA PRINCIPAL (Card Container)
+// =========================================
+// Esto reemplaza a .table-responsive para que el formulario se vea igual a la tabla
 .card-container {
-  background: #ffffff;
   width: 100%;
-  max-width: 800px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  height: fit-content;
-  overflow: hidden; // Para que el header respete los bordes redondeados
-  margin-bottom: 40px;
-  animation: slideIn 0.3s ease-out;
+  max-width: 95vw; // Ajuste similar a tus media queries
+  margin: 0 auto;
+  background: #fff;
+  border-radius: $radius-card;
+  box-shadow: $shadow-card;
+  padding: 2rem;
+
+  @media (max-width: 992px) {
+    width: 100%;
+    padding: 1.5rem;
+  }
 }
 
-// -- CABECERA CON GRADIENTE AZUL (De vuelta) --
+// =========================================
+// 4. TIPOGRAFÍA Y TÍTULOS (La parte clave)
+// =========================================
+
 .card-header-custom {
-  // Gradiente azul elegante (Estilo Ticket anterior)
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  padding: 30px 40px;
   display: flex;
   justify-content: space-between;
-  align-items: center; // Alineado al centro verticalmente
+  align-items: flex-start;
+  margin-bottom: 2rem;
 
   .header-text {
+    width: 100%;
+
+    // Aplicando estilos de .title-perfil / .title-table
     .title-custom {
-      font-family: 'Nexa-Bold', sans-serif; // Fuente de tu app
-      font-size: 26px;
-      color: #ffffff; // Texto blanco para resaltar en el azul
-      margin: 0;
-      letter-spacing: 1px;
+      font-family: $font-bold;
+      color: $color-dark;
+      text-transform: capitalize;
+      line-height: 1.1;
+      text-wrap: balance;
+      margin-bottom: 0.5rem;
+
+      // Lógica CLAMP exacta de tu archivo
+      font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2.25rem);
+      text-align: left;
+
+      // Ajustes responsive copiados
+      @media (max-width: 575px) {
+        text-align: center;
+        font-size: clamp(1.35rem, 1.1rem + 1.6vw, 2rem);
+      }
     }
 
     .subtitle-custom {
-      color: rgba(255, 255, 255, 0.8); // Blanco con transparencia
-      margin-top: 5px;
-      font-size: 14px;
-      font-weight: 400;
+      font-family: $font-main;
+      font-size: 16px;
+      color: lighten($color-dark, 20%);
+
+      @media (max-width: 575px) {
+        text-align: center;
+        display: block;
+      }
     }
   }
 
-  // Flecha "Limpia" e Integrada (Blanca)
+  // Botón de regresar
   .clean-back-btn {
-    color: #ffffff;
+    color: $color-dark;
     transform: scale(1.1);
-    background: rgba(255, 255, 255, 0.1); // Fondo muy sutil al estar inactivo
-    border-radius: 50%;
-
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.25); // Resalte al pasar el mouse
-      transform: scale(1.2);
-      transition: all 0.2s ease;
-    }
   }
 }
 
-.card-body-custom {
-  padding: 30px 40px 40px 40px;
+// =========================================
+// 5. INPUTS Y FORMULARIOS (Estilo Alumnos)
+// =========================================
+
+// Forzamos la tipografía Nexa en los inputs de Material
+:host ::ng-deep {
+
+  .mat-mdc-form-field {
+    font-family: $font-main !important;
+
+    // Quitar fondo gris y usar estilo outline suave o fill blanco
+    .mat-mdc-text-field-wrapper {
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px; // Un poco menos que la card
+    }
+
+    // Texto del input
+    input.mat-mdc-input-element,
+    textarea.mat-mdc-input-element {
+      font-family: $font-main !important;
+      color: $color-dark !important;
+      font-size: 15px !important; // Igual a .mat-mdc-cell
+    }
+
+    // Labels y Placeholders
+    .mdc-floating-label,
+    .mat-mdc-select-value {
+      font-family: $font-main !important;
+      color: lighten($color-dark, 30%) !important;
+    }
+
+    // Iconos
+    .mat-icon {
+      color: $color-blue; // Usamos el azul de tus acciones
+    }
+
+    // Eliminar la línea inferior por defecto para un look más limpio (tipo card)
+    .mdc-line-ripple {
+      display: none;
+    }
+  }
+
+  // Checkboxes
+  .mat-mdc-checkbox {
+    font-family: $font-main !important;
+    color: $color-dark;
+  }
 }
 
-// -- SECCIÓN TICKET (Destacado de Fechas) --
-.ticket-row-highlight {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px 15px;
-  border: 1px solid #eef2f5;
-  margin-bottom: 25px;
+// =========================================
+// 6. SECCIONES INTERNAS
+// =========================================
 
-  // Línea divisoria punteada para escritorio
+// Línea punteada divisoria
+.ticket-row-highlight {
   .border-right-dashed {
-    border-right: 1px dashed #ccc;
+    border-right: 2px dashed #e0e0e0;
 
     @media (max-width: 768px) {
       border-right: none;
-      border-bottom: 1px dashed #ccc;
-      margin-bottom: 15px;
-      padding-bottom: 15px;
+      border-bottom: 2px dashed #e0e0e0;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
     }
   }
 }
 
-.compact-input {
-  margin-bottom: 0;
-
-  // Ajuste fino para inputs dentro del ticket
-  ::ng-deep .mat-form-field-wrapper {
-    padding-bottom: 0;
-  }
-}
-
-// -- INPUTS (Estilo Fill con línea abajo) --
-::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
-  background-color: #fafafa !important; // Fondo casi blanco
-  border-bottom: 1px solid #dcdcdc;
-  border-radius: 4px 4px 0 0;
-}
-
-// -- AUDIENCIA (Checkboxes) --
+// Sección de audiencia
 .audience-section {
-  background: #fff;
+  background: transparent; // Usando el color de tu .alert-warning
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-top: 1rem;
 
   .audience-label {
+    font-family: $font-bold;
+    color: $color-dark;
+    margin-bottom: 0.5rem;
     display: block;
-    font-family: 'Nexa-Bold', sans-serif;
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 12px;
-  }
-
-  // Ajuste de color para los checkboxes al seleccionarse (Turquesa)
-  ::ng-deep .mat-checkbox-checked.mat-primary .mat-checkbox-background {
-    background-color: #0092B8 !important;
   }
 }
 
-// -- BOTÓN DE ACCIÓN (Turquesa con Gradiente) --
+// Mensajes de error
+.error-msg {
+  font-family: $font-main;
+  color: $color-red; // Color .td-eliminar
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+// =========================================
+// 7. BOTONES (Basado en td-editar/eliminar)
+// =========================================
+
 .btn-primary-custom {
-  background: linear-gradient(135deg, #0092B8 0%, #007a99 100%) !important;
-  color: white !important;
-  font-family: 'Nexa-Bold', sans-serif; // Fuente solicitada
-  font-size: 16px;
-  letter-spacing: 0.5px;
-  padding: 0 45px;
-  height: 50px;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 146, 184, 0.25);
-  border: none;
-  margin-top: 20px;
+  background-color: $color-blue !important; // El azul de .td-editar
+  color: #fff !important;
+  font-family: $font-bold !important;
+  font-size: 18px;
+  padding: 1.2rem 2.5rem !important;
+  border-radius: 30px; // Bordes muy redondos, moderno
+  box-shadow: 0 4px 10px rgba($color-blue, 0.3);
   transition: all 0.3s ease;
 
   &:hover {
+    background-color: darken($color-blue, 10%) !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 146, 184, 0.4);
-    background: linear-gradient(135deg, #00A3CC 0%, #008cb3 100%) !important;
-  }
-}
-
-// Animación de entrada
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-// -- RESPONSIVE --
-@media (max-width: 600px) {
-  .full-screen-wrapper {
-    padding: 0;
-    background: #fff;
-  }
-
-  .card-container {
-    border-radius: 0;
-    box-shadow: none;
-    min-height: 100vh;
-    margin-bottom: 0;
-  }
-
-  .card-header-custom {
-    padding: 20px;
-
-    .header-text .title-custom {
-      font-size: 22px;
-    }
-  }
-
-  .card-body-custom {
-    padding: 20px;
-  }
-
-  // En móvil el botón ocupa todo el ancho
-  .btn-primary-custom {
-    width: 100%;
-  }
-
-
-
-}
-
-::ng-deep .cdk-overlay-container {
-  z-index: 10000 !important; // Mayor que el 9999 del wrapper
-}
-
-::ng-deep .cdk-global-overlay-wrapper {
-  z-index: 10001 !important;
-}
-
-// 2. Para el Reloj (ngx-material-timepicker)
-::ng-deep .timepicker-overlay {
-  z-index: 10002 !important;
-}
-
-::ng-deep .timepicker-backdrop {
-  z-index: 10001 !important;
-}
-
-// Estilo para mensajes de error forzados
-.error-msg {
-  color: #f44336;
-  font-size: 11px;
-  margin-top: -15px;
-  margin-bottom: 10px;
-  margin-left: 10px;
-  font-family: 'Roboto', sans-serif;
-  display: flex;
-  align-items: center;
-  animation: fadeIn 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }

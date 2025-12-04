@@ -20,8 +20,6 @@ export class EventosScreenComponent implements OnInit {
   public token: string = "";
   public lista_eventos: any[] = [];
 
-
-  // Definimos las columnas base (lo que todos pueden ver)
   displayedColumns: string[] = ['nombre_evento', 'tipo_evento', 'fecha', 'horario', 'lugar', 'responsable_nombre'];
 
   dataSource = new MatTableDataSource<any>();
@@ -46,8 +44,6 @@ export class EventosScreenComponent implements OnInit {
       this.router.navigate(["/"]);
     }
 
-    // PUNTO 16 y 19: Si es Administrador, agregamos las columnas de acciones.
-    // Si es Maestro o Alumno, estas columnas NO EXISTEN para ellos.
     if (this.rol === 'administrador') {
       this.displayedColumns.push('editar');
       this.displayedColumns.push('eliminar');
@@ -57,7 +53,6 @@ export class EventosScreenComponent implements OnInit {
     this.initTableFilter();
   }
 
-  // Configuración del filtro (PUNTO 13: Buscar por nombre)
   initTableFilter() {
     this.dataSource.filterPredicate = (data: any, filter: string) => {
       const nombre = data.nombre_evento.trim().toLowerCase();
@@ -70,27 +65,20 @@ export class EventosScreenComponent implements OnInit {
       (response) => {
         let eventosFiltrados = response;
 
-        // PUNTO 19 y 20: Filtrado de filas según el rol
         if (this.rol === 'alumno') {
-          // El alumno solo ve eventos para "Estudiantes" o "Público en General"
           eventosFiltrados = eventosFiltrados.filter((e: any) =>
             this.esPublicoObjetivo(e.publico_objetivo, ['Estudiantes', 'Público en General'])
           );
         } else if (this.rol === 'maestro') {
-          // El maestro solo ve eventos para "Profesores" o "Público en General"
           eventosFiltrados = eventosFiltrados.filter((e: any) =>
             this.esPublicoObjetivo(e.publico_objetivo, ['Profesores', 'Público en General'])
           );
         }
-        // El Administrador ve TODOS (sin filtro)
 
         this.lista_eventos = eventosFiltrados;
         console.log("Eventos cargados:", this.lista_eventos);
-
-        // Asignamos datos a la tabla
         this.dataSource.data = this.lista_eventos;
 
-        // Reiniciamos paginador y sort para que detecten los datos nuevos
         setTimeout(() => {
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
@@ -102,9 +90,8 @@ export class EventosScreenComponent implements OnInit {
     );
   }
 
-  // Función auxiliar para revisar si el array de públicos contiene alguno de los permitidos
   private esPublicoObjetivo(targetArray: any[], permitidos: string[]): boolean {
-    if (!Array.isArray(targetArray)) return false; // Si no es array, lo descartamos por seguridad
+    if (!Array.isArray(targetArray)) return false;
     return targetArray.some(r => permitidos.includes(r));
   }
 
@@ -117,12 +104,10 @@ export class EventosScreenComponent implements OnInit {
     }
   }
 
-  // Navegación a editar (PUNTO 15)
   public goEditar(idEvento: number) {
     this.router.navigate(["registro-eventos/" + idEvento]);
   }
 
-  // Eliminar
   public delete(idEvento: number) {
     const dialogRef = this.dialog.open(EliminarEventoModalComponent, {
       data: { id: idEvento },

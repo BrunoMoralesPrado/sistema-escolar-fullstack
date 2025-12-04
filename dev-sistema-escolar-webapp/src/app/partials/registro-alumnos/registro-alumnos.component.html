@@ -85,6 +85,8 @@
       <mat-form-field class="mat-input" appearance="outline" *ngIf="!editar">
         <mat-label>Confirmar contraseña</mat-label>
         <input
+          minlength="8"
+          maxlength="10"
           matInput
           [(ngModel)]="alumno.confirmar_password"
           type="{{ inputType_2 }}"

@@ -73,11 +73,17 @@ export class AlumnosScreenComponent implements OnInit {
   ngOnInit(): void {
     this.name_user = this.facadeService.getUserCompleteName();
     this.rol = this.facadeService.getUserGroup();
+    if (this.rol === 'alumno') {
+      this.displayedColumns = ['matricula', 'nombre', 'email', 'telefono', 'curp', 'rfc'];
+    } else {
+      // Si es admin (o maestro), mostramos todas las opciones
+      this.displayedColumns = ['matricula', 'nombre', 'email', 'telefono', 'curp', 'rfc', 'editar', 'eliminar'];
+    }
     //Validar que haya inicio de sesión
     //Obtengo el token del login
     this.token = this.facadeService.getSessionToken();
     console.log("Token: ", this.token);
-    if(this.token == ""){
+    if (this.token == "") {
       this.router.navigate(["/"]);
     }
     //Obtener Alumnos

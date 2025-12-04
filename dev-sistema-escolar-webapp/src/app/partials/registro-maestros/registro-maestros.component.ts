@@ -52,7 +52,7 @@ export class RegistroMaestrosComponent implements OnInit {
     public activatedRoute: ActivatedRoute,
     private facadeService: FacadeService,
     private maestrosService: MaestrosService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Validar si existe un ID en la URL para saber si es edición
@@ -60,6 +60,9 @@ export class RegistroMaestrosComponent implements OnInit {
       this.editar = true;
       this.idUser = this.activatedRoute.snapshot.params['id'];
       this.maestro = this.datos_user;
+      if (this.maestro.fecha_nacimiento) {
+        this.maestro.fecha_nacimiento = this.esquemaFecha(this.maestro.fecha_nacimiento);
+      }
       if (this.maestro.materias_json) {
         if (typeof this.maestro.materias_json === 'string') {
           try {
@@ -88,20 +91,19 @@ export class RegistroMaestrosComponent implements OnInit {
   }
 
   public registrar() {
-    //Validamos si el formulario está lleno y correcto
     this.errors = {};
-    this.errors = this.maestrosService.validarMaestro(
-      this.maestro,
-      this.editar
-    );
+    this.errors = this.maestrosService.validarMaestro(this.maestro, this.editar);
     if (Object.keys(this.errors).length > 0) {
       return false;
     }
-    //Validar la contraseña
     if (this.maestro.password == this.maestro.confirmar_password) {
-      this.maestrosService.registrarMaestro(this.maestro).subscribe(
+      const datosAEnviar = { ...this.maestro };
+
+      if (datosAEnviar.fecha_nacimiento) {
+        datosAEnviar.fecha_nacimiento = this.formatDateForServer(datosAEnviar.fecha_nacimiento);
+      }
+      this.maestrosService.registrarMaestro(datosAEnviar).subscribe(
         (response) => {
-          // Redirigir o mostrar mensaje de éxito
           alert('Maestro registrado exitosamente');
           console.log('Maestro registrado: ', response);
           if (this.token && this.token !== '') {
@@ -111,7 +113,6 @@ export class RegistroMaestrosComponent implements OnInit {
           }
         },
         (error) => {
-          // Manejar errores de la API
           alert('Error al registrar maestro');
           console.error('Error al registrar maestro: ', error);
         }
@@ -125,15 +126,16 @@ export class RegistroMaestrosComponent implements OnInit {
 
   public actualizar() {
     this.errors = {};
-    this.errors = this.maestrosService.validarMaestro(
-      this.maestro,
-      this.editar
-    );
+    this.errors = this.maestrosService.validarMaestro(this.maestro, this.editar);
     if (Object.keys(this.errors).length > 0) {
       return false;
     }
     console.log('Actualizando maestro: ', this.maestro);
-    this.maestrosService.actualizarMaestro(this.maestro).subscribe(
+    const datosAEnviar = { ...this.maestro };
+    if (datosAEnviar.fecha_nacimiento) {
+      datosAEnviar.fecha_nacimiento = this.formatDateForServer(datosAEnviar.fecha_nacimiento);
+    }
+    this.maestrosService.actualizarMaestro(datosAEnviar).subscribe(
       (response) => {
         alert('Maestro actualizado exitosamente');
         console.log('Maestro actualizado: ', response);
@@ -169,11 +171,9 @@ export class RegistroMaestrosComponent implements OnInit {
 
   //Función para detectar el cambio de fecha
   public changeFecha(event: any) {
-    console.log(event);
-    console.log(event.value.toISOString());
-
-    this.maestro.fecha_nacimiento = event.value.toISOString().split('T')[0];
-    console.log('Fecha: ', this.maestro.fecha_nacimiento);
+    if (event.value) {
+      this.maestro.fecha_nacimiento = event.value;
+    }
   }
 
   // Funciones para los checkbox
@@ -227,5 +227,34 @@ export class RegistroMaestrosComponent implements OnInit {
     ) {
       event.preventDefault(); // Bloquea cualquier otro caracter
     }
+  }
+
+  public formatDateForServer(fecha: any): string {
+    if (!fecha) return '';
+    if (typeof fecha === 'string') return fecha;
+
+    const d = new Date(fecha);
+    const year = d.getFullYear();
+    const month = ('' + (d.getMonth() + 1)).padStart(2, '0');
+    const day = ('' + d.getDate()).padStart(2, '0');
+
+    return [year, month, day].join('-');
+  }
+
+  public esquemaFecha(fecha: any): Date {
+    if (!fecha) return new Date();
+
+    if (fecha instanceof Date) {
+      return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate(), 12, 0, 0);
+    }
+
+    const fechaStr = fecha.toString().split('T')[0];
+    const partes = fechaStr.split('-');
+
+    const anio = parseInt(partes[0]);
+    const mes = parseInt(partes[1]) - 1;
+    const dia = parseInt(partes[2]);
+
+    return new Date(anio, mes, dia, 12, 0, 0);
   }
 }

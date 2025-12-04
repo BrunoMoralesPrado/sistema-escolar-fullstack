@@ -31,7 +31,7 @@ export class RegistroAlumnosComponent implements OnInit {
     public activatedRoute: ActivatedRoute,
     private facadeService: FacadeService,
     private alumnosService: AlumnosService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     if (this.activatedRoute.snapshot.params['id'] != undefined) {
@@ -39,6 +39,9 @@ export class RegistroAlumnosComponent implements OnInit {
       this.idUser = this.activatedRoute.snapshot.params['id'];
       console.log('ID User: ', this.idUser);
       this.alumno = this.datos_user;
+      if (this.alumno.fecha_nacimiento) {
+        this.alumno.fecha_nacimiento = this.esquemaFecha(this.alumno.fecha_nacimiento);
+      }
     } else {
       this.alumno = this.alumnosService.esquemaAlumno();
       this.alumno.rol = this.rol;
@@ -52,20 +55,19 @@ export class RegistroAlumnosComponent implements OnInit {
   }
 
   public registrar() {
-    //Validamos si el formulario está lleno y correcto
     this.errors = {};
     this.errors = this.alumnosService.validarAlumno(this.alumno, this.editar);
     if (Object.keys(this.errors).length > 0) {
       return false;
     }
-
-    // Lógica para registrar un nuevo alumno
     if (this.alumno.password == this.alumno.confirmar_password) {
-      this.alumnosService.registrarAlumno(this.alumno).subscribe(
+      const datosAEnviar = { ...this.alumno };
+      if (datosAEnviar.fecha_nacimiento) {
+        datosAEnviar.fecha_nacimiento = this.formatDateForServer(datosAEnviar.fecha_nacimiento);
+      }
+      this.alumnosService.registrarAlumno(datosAEnviar).subscribe(
         (response) => {
-          // Redirigir o mostrar mensaje de éxito
           alert('Alumno registrado exitosamente');
-          console.log('Alumno registrado: ', response);
           if (this.token && this.token !== '') {
             this.router.navigate(['alumnos']);
           } else {
@@ -73,9 +75,7 @@ export class RegistroAlumnosComponent implements OnInit {
           }
         },
         (error) => {
-          // Manejar errores de la API
           alert('Error al registrar alumno');
-          console.error('Error al registrar alumno: ', error);
         }
       );
     } else {
@@ -91,16 +91,17 @@ export class RegistroAlumnosComponent implements OnInit {
     if (Object.keys(this.errors).length > 0) {
       return false;
     }
-    console.log('Actualizando alumno: ', this.alumno);
-    this.alumnosService.actualizarAlumno(this.alumno).subscribe(
+    const datosAEnviar = { ...this.alumno };
+    if (datosAEnviar.fecha_nacimiento) {
+      datosAEnviar.fecha_nacimiento = this.formatDateForServer(datosAEnviar.fecha_nacimiento);
+    }
+    this.alumnosService.actualizarAlumno(datosAEnviar).subscribe(
       (response) => {
         alert('Alumno actualizado exitosamente');
-        console.log('Alumno actualizado: ', response);
         this.router.navigate(['alumnos']);
       },
       (error) => {
         alert('Error al actualizar el alumno');
-        console.error('Error: ', error);
       }
     );
   }
@@ -128,9 +129,9 @@ export class RegistroAlumnosComponent implements OnInit {
 
   //Función para detectar el cambio de fecha
   public changeFecha(event: any) {
-    if(event.value){
-      const fechaNacimiento = new Date(event.value);
-      this.alumno.fecha_nacimiento = fechaNacimiento.toISOString().split('T')[0];
+    if (event.value) {
+      this.alumno.fecha_nacimiento = event.value;
+      const fechaNacimiento = event.value;
       const hoy = new Date();
       let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
       const mes = hoy.getMonth() - fechaNacimiento.getMonth();
@@ -138,8 +139,8 @@ export class RegistroAlumnosComponent implements OnInit {
         edad--;
       }
       this.alumno.edad = edad;
-      console.log("Fecha seleccionada: ", this.alumno.fecha_nacimiento);
-      console.log("Edad calculada: ", this.alumno.edad);
+      console.log("Fecha objeto:", this.alumno.fecha_nacimiento);
+      console.log("Edad calculada:", this.alumno.edad);
     }
   }
 
@@ -163,5 +164,33 @@ export class RegistroAlumnosComponent implements OnInit {
     ) {
       event.preventDefault(); // Bloquea cualquier otro caracter
     }
+  }
+
+  public formatDateForServer(fecha: any): string {
+    if (!fecha) return '';
+    if (typeof fecha === 'string') return fecha;
+    const d = new Date(fecha);
+    const year = d.getFullYear();
+    const month = ('' + (d.getMonth() + 1)).padStart(2, '0');
+    const day = ('' + d.getDate()).padStart(2, '0');
+    return [year, month, day].join('-');
+  }
+
+  public esquemaFecha(fecha: any): Date {
+    if (!fecha) return new Date();
+    if (fecha instanceof Date) {
+      if (isNaN(fecha.getTime())) return new Date();
+      return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate(), 12, 0, 0);
+    }
+    const fechaStr = fecha.toString();
+    if (fechaStr.includes('-')) {
+      const partes = fechaStr.split('T')[0].split('-');
+      const anio = parseInt(partes[0]);
+      const mes = parseInt(partes[1]) - 1;
+      const dia = parseInt(partes[2]);
+      return new Date(anio, mes, dia, 12, 0, 0);
+    }
+
+    return new Date(fecha);
   }
 }

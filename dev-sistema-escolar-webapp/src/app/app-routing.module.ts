@@ -11,6 +11,8 @@ import { MaestrosScreenComponent } from './screens/maestros-screen/maestros-scre
 import { GraficasScreenComponent } from './screens/graficas-screen/graficas-screen.component';
 import { RegistroEventosScreenComponent } from './screens/registro-eventos-screen/registro-eventos-screen.component';
 import { EventosScreenComponent } from './screens/eventos-screen/eventos-screen.component';
+import { AdminGuard } from './guards/admin.guard';
+import { OwnerGuard } from './guards/owner.guard';
 
 const routes: Routes = [
   {
@@ -20,7 +22,8 @@ const routes: Routes = [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', component: LoginScreenComponent },
       { path: 'registro-usuarios', component: RegistroUsuariosScreenComponent },
-      { path: 'registro-usuarios/:rol/:id', component: RegistroUsuariosScreenComponent }
+      { path: 'registro-usuarios/:rol/:id', component: RegistroUsuariosScreenComponent, canActivate: [OwnerGuard]
+      }
     ]
   },
   {
@@ -31,9 +34,9 @@ const routes: Routes = [
       { path: 'administrador', component: AdminScreenComponent }, // Keep legacy route
       { path: 'alumnos', component: AlumnosScreenComponent },
       { path: 'maestros', component: MaestrosScreenComponent },
-      { path: 'registro-eventos', component: RegistroEventosScreenComponent },
+      { path: 'registro-eventos', component: RegistroEventosScreenComponent, canActivate: [AdminGuard] },
       { path: 'lista-eventos', component: EventosScreenComponent, pathMatch: 'full' },
-      { path: 'registro-eventos/:id', component: RegistroEventosScreenComponent, pathMatch: 'full' },
+      { path: 'registro-eventos/:id', component: RegistroEventosScreenComponent, pathMatch: 'full', canActivate: [AdminGuard] },
       { path: 'graficas', component: GraficasScreenComponent }
     ]
   },

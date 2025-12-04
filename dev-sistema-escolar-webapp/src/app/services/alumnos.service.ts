@@ -81,8 +81,10 @@ export class AlumnosService {
         error['confirmar_password'] = this.errorService.required;
       } else if (!this.validatorService.min(data['confirmar_password'], 8)) {
         error['confirmar_password'] = this.errorService.min(8);
+      } else if (!this.validatorService.max(data['confirmar_password'], 10)) {
+        error['confirmar_password'] = this.errorService.max(10);
       } else if (data['password'] !== data['confirmar_password']) {
-        error['confirmar_password'] = 'Las constraseñas no coincides.';
+        error['confirmar_password'] = 'Las contraseñas no coinciden.';
       }
     }
 
