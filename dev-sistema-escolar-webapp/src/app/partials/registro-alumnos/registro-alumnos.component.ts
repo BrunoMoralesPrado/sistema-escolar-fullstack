@@ -127,7 +127,6 @@ export class RegistroAlumnosComponent implements OnInit {
     }
   }
 
-  //Función para detectar el cambio de fecha
   public changeFecha(event: any) {
     if (event.value) {
       this.alumno.fecha_nacimiento = event.value;
@@ -158,11 +157,11 @@ export class RegistroAlumnosComponent implements OnInit {
   public soloAlfanumericos(event: KeyboardEvent) {
     const charCode = event.key.charCodeAt(0);
     if (
-      !(charCode >= 65 && charCode <= 90) && // Letras mayúsculas (A-Z)
-      !(charCode >= 97 && charCode <= 122) && // Letras minúsculas (a-z)
-      !(charCode >= 48 && charCode <= 57) // Números (0-9)
+      !(charCode >= 65 && charCode <= 90) &&
+      !(charCode >= 97 && charCode <= 122) &&
+      !(charCode >= 48 && charCode <= 57)
     ) {
-      event.preventDefault(); // Bloquea cualquier otro caracter
+      event.preventDefault();
     }
   }
 

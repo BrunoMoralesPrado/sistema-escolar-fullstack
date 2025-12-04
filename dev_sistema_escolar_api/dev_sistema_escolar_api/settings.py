@@ -107,9 +107,9 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
     'TIME_INPUT_FORMATS': [
-        '%H:%M:%S',     # 14:30:59 (Estándar)
-        '%H:%M',        # 14:30 (Lo que envía tu reloj de 24h)
-        '%I:%M %p',     # 02:30 PM (Por si usas formato 12h)
-        '%I:%M:%S %p',  # 02:30:59 PM
+        '%H:%M:%S',     
+        '%H:%M',        
+        '%I:%M %p',    
+        '%I:%M:%S %p',  
     ],
 }

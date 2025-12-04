@@ -454,12 +454,10 @@ table {
   }
 }
 
-/* 4. Arreglar el Paginador (Parte inferior) */
 ::ng-deep .mat-mdc-paginator {
   background-color: var(--paginator-bg, #fff) !important;
   color: var(--text-main, #222) !important;
 
-  /* Los numeritos y textos del paginador */
   .mat-mdc-select-value {
     color: var(--text-main, #222) !important;
   }

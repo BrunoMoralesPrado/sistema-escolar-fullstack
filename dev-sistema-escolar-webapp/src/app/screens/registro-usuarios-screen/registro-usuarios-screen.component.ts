@@ -75,7 +75,6 @@ export class RegistroUsuariosScreenComponent implements OnInit {
     }
   }
 
-  //Obtener usuario por ID
   public obtenerUserByID() {
     console.log("Obteniendo usuario de tipo: ", this.rol, " con ID: ", this.idUser);
     if (this.rol == "administrador") {
@@ -174,8 +173,7 @@ export class RegistroUsuariosScreenComponent implements OnInit {
 
   public formatDateForServer(fecha: any): string {
     if (!fecha) return '';
-    if (typeof fecha === 'string') return fecha; // Si ya es string, no lo tocamos
-
+    if (typeof fecha === 'string') return fecha;
     const d = new Date(fecha);
     const month = '' + (d.getMonth() + 1);
     const day = '' + d.getDate();
@@ -184,8 +182,6 @@ export class RegistroUsuariosScreenComponent implements OnInit {
     return [year, month.padStart(2, '0'), day.padStart(2, '0')].join('-');
   }
 
-
-  //Función para regresar a la pantalla anterior
   public goBack() {
     this.location.back();
   }

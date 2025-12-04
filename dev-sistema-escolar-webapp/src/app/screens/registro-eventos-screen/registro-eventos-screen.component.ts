@@ -88,7 +88,6 @@ export class RegistroEventosScreenComponent implements OnInit {
     }
   }
 
-  // Carga Admins y Maestros y los une en una sola lista para el Select
   public obtenerResponsables() {
     this.administradoresService.obtenerListaAdmins().subscribe(
       (admins) => {
@@ -133,7 +132,6 @@ export class RegistroEventosScreenComponent implements OnInit {
     return false;
   }
 
-  // Helper para mostrar/ocultar el select de carrera
   public isEstudianteSelected(): boolean {
     if (this.evento.publico_objetivo && Array.isArray(this.evento.publico_objetivo)) {
       return this.evento.publico_objetivo.includes('Estudiantes');
@@ -147,15 +145,11 @@ export class RegistroEventosScreenComponent implements OnInit {
 
   public registrar() {
     this.errors = this.eventosService.validarEvento(this.evento, this.editar);
-
     if (!$.isEmptyObject(this.errors)) {
       alert("Error en los datos. Por favor verifica los campos.");
       return false;
     }
-
-    // Convertir fecha de JS a YYYY-MM-DD
     this.formatDateForServer();
-
     this.eventosService.registrarEvento(this.evento).subscribe(
       (response) => {
         alert("Evento registrado correctamente");
@@ -198,7 +192,6 @@ export class RegistroEventosScreenComponent implements OnInit {
     });
   }
 
-  // Función auxiliar para fechas
   public changeFecha(event: any) {
     if (event.value) {
       this.evento.fecha = event.value;
@@ -207,13 +200,11 @@ export class RegistroEventosScreenComponent implements OnInit {
 
   private formatDateForServer() {
     if (this.evento.fecha && typeof this.evento.fecha !== 'string') {
-      // Crear un objeto fecha usando los componentes locales para evitar el cambio de día por UTC
       const d = new Date(this.evento.fecha);
       const month = '' + (d.getMonth() + 1);
       const day = '' + d.getDate();
       const year = d.getFullYear();
 
-      // Formato YYYY-MM-DD manual
       this.evento.fecha = [year, month.padStart(2, '0'), day.padStart(2, '0')].join('-');
     }
   }

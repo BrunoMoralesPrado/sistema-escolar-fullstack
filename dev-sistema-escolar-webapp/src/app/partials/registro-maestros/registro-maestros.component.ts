@@ -55,7 +55,6 @@ export class RegistroMaestrosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Validar si existe un ID en la URL para saber si es edición
     if (this.activatedRoute.snapshot.params['id'] != undefined) {
       this.editar = true;
       this.idUser = this.activatedRoute.snapshot.params['id'];

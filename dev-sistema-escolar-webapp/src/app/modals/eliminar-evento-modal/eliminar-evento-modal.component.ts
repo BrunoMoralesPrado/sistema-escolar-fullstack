@@ -16,7 +16,6 @@ export class EliminarEventoModalComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Recibimos el ID en this.data.id
   }
 
   public cerrar_modal() {

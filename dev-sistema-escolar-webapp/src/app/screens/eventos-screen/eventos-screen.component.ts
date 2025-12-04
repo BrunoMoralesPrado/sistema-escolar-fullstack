@@ -38,7 +38,6 @@ export class EventosScreenComponent implements OnInit {
     this.name_user = this.facadeService.getUserCompleteName();
     this.rol = this.facadeService.getUserGroup();
 
-    // Validar token de sesión
     this.token = this.facadeService.getSessionToken();
     if (this.token == "") {
       this.router.navigate(["/"]);

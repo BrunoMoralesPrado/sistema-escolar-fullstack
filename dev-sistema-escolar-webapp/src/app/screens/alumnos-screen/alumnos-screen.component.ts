@@ -76,31 +76,22 @@ export class AlumnosScreenComponent implements OnInit {
     if (this.rol === 'alumno') {
       this.displayedColumns = ['matricula', 'nombre', 'email', 'telefono', 'curp', 'rfc'];
     } else {
-      // Si es admin (o maestro), mostramos todas las opciones
       this.displayedColumns = ['matricula', 'nombre', 'email', 'telefono', 'curp', 'rfc', 'editar', 'eliminar'];
     }
-    //Validar que haya inicio de sesión
-    //Obtengo el token del login
     this.token = this.facadeService.getSessionToken();
     console.log("Token: ", this.token);
     if (this.token == "") {
       this.router.navigate(["/"]);
     }
-    //Obtener Alumnos
     this.obtenerAlumnos();
 
-    // Le dice a la tabla como debe filtrar
     this.dataSource.filterPredicate = (data: DatosAlumno, filter: string) => {
-      // Combina nombre y apellido y los pasa a minúsculas
       const fullName = (data.first_name + ' ' + data.last_name).trim().toLowerCase();
-      // Retorna true si el nombre completo incluye el texto del filtro
       return fullName.includes(filter);
     };
   }
 
   setDataSourceAttributes() {
-    // Esta función se llamará automáticamente cuando
-    // el *ngIf muestre la tabla y el sort/paginator aparezcan.
     if (this.paginator) {
       this.dataSource.paginator = this.paginator;
     }
@@ -124,11 +115,6 @@ export class AlumnosScreenComponent implements OnInit {
             usuario.email = usuario.user.email;
           });
           console.log("Alumnos: ", this.lista_alumnos);
-
-          // Esot crea un nuevo dataSource
-          // this.dataSource = new MatTableDataSource<DatosUsuario>(this.lista_alumnos as DatosUsuario[]);
-
-          // esto actualiza dataSource existente
           this.dataSource.data = this.lista_alumnos as DatosAlumno[];
         }
       }, (error) => {
@@ -141,17 +127,11 @@ export class AlumnosScreenComponent implements OnInit {
 
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-
-    // Asigna el valor al filtro (ya limpio y en minúsculas)
-    // Esto automáticamente usará el "filterPredicate" que definimos en ngOnInit
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    // Resetea a la primera página si hay paginación
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
   }
-
 
   public goEditar(idUser: number) {
     this.router.navigate(["registro-usuarios/alumnos/" + idUser]);
@@ -179,7 +159,6 @@ export class AlumnosScreenComponent implements OnInit {
   }
 
 }
-
 
 export interface DatosAlumno {
   id: number,

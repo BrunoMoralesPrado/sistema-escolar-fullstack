@@ -34,12 +34,9 @@ export class EventosService {
     }
   }
 
-  // --- FUNCIÓN AUXILIAR PARA COMPARAR HORAS ---
-  // Convierte "9:30 AM" o "14:30" a minutos totales del día (ej. 570)
   private timeToMinutes(timeStr: string): number {
     if (!timeStr) return 0;
 
-    // Separamos la hora del modificador AM/PM (si existe)
     const [time, modifier] = timeStr.split(' ');
     let [hours, minutes] = time.split(':').map(Number);
 
@@ -65,16 +62,11 @@ export class EventosService {
       error["fecha"] = this.errorService.required;
     } else {
       const fechaEvento = new Date(data["fecha"]);
-      // Ajustamos la hora para evitar problemas de zona horaria al comparar solo fechas
       const hoy = new Date();
       hoy.setHours(0, 0, 0, 0);
-      // Creamos una copia de la fecha del evento a medianoche para comparar peras con peras
       const fechaComparacion = new Date(fechaEvento);
       fechaComparacion.setHours(0, 0, 0, 0);
 
-      // Sumamos un día a 'hoy' si quieres permitir eventos HOY mismo,
-      // o déjalo así para estricto futuro.
-      // Tu PDF dice: "No se podrán seleccionar fechas anteriores al día actual".
       if (fechaComparacion < hoy && !editar) {
         error["fecha"] = "La fecha no puede ser anterior al día de hoy.";
       }
@@ -129,8 +121,6 @@ export class EventosService {
 
     return error;
   }
-
-  // --- PETICIONES HTTP ---
 
   public registrarEvento(data: any): Observable<any> {
     const token = this.facadeService.getSessionToken();
