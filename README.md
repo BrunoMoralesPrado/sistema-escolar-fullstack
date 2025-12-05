@@ -64,5 +64,4 @@ Frontend (Angular):
     Ejecutar el servidor de desarrollo: ng serve
     
     La aplicación estará disponible en el puerto 4200.
-Autor
-Nombre: Bruno Morales Prado
+Autor Bruno Morales Prado
